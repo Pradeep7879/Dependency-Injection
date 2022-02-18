@@ -28,6 +28,7 @@ Drupal Services and Dependency Injection
     use Drupal\Core\Datetime\DateFormatterInterface;
     use Drupal\Core\Routing\RouteMatchInterface;
     use Drupal\Core\Routing\UrlGeneratorInterface;
+    use Drupal\Core\Messenger\MessengerInterface;
     use Symfony\Component\DependencyInjection\ContainerInterface;
 
     /**
@@ -178,6 +179,13 @@ Drupal Services and Dependency Injection
       protected $urlGenerator;      
 
       /**
+       * The Messenger service.
+       *
+       * @var \Drupal\Core\Messenger\MessengerInterface
+       */
+      protected $messenger;
+      
+      /**
        * Constructs a new UserLoginForm.
        *
        * @param \Drupal\Core\Session\AccountInterface $account
@@ -220,6 +228,8 @@ Drupal Services and Dependency Injection
        *   The route match.
        * @param \Drupal\Core\Routing\UrlGeneratorInterface $url_generator
        *   The url generator.
+       * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+       *   The messenger.
        */
 
       public function __construct(AccountInterface $account, AccountProxyInterface $current_user,
@@ -240,7 +250,8 @@ Drupal Services and Dependency Injection
       LoggerInterface $logger,
       DateFormatterInterface $date_formatter,
       RouteMatchInterface $route_match,
-      UrlGeneratorInterface $url_generator) {
+      UrlGeneratorInterface $url_generator,
+      MessengerInterface $messenger) {
         $this->account = $account;
         $this->currentUser = $current_user;
         $this->connection = $connection;
@@ -261,6 +272,7 @@ Drupal Services and Dependency Injection
         $this->dateFormatter = $date_formatter;
         $this->routeMatch = $route_match;
         $this->urlGenerator = $url_generator;
+        $this->messenger = $messenger;
       }
 
       /**
@@ -287,6 +299,7 @@ Drupal Services and Dependency Injection
           $container->get('logger.factory')->get('user'),
           $container->get('date.formatter'),
           $container->get('current_route_match'),
-          $container->get('url_generator')
+          $container->get('url_generator'),
+          $container->get('messenger')
         );
       }
