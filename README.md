@@ -29,6 +29,7 @@ Drupal Services and Dependency Injection
     use Drupal\Core\Routing\RouteMatchInterface;
     use Drupal\Core\Routing\UrlGeneratorInterface;
     use Drupal\Core\Messenger\MessengerInterface;
+    use \Drupal\Core\Path\CurrentPathStack;
     use Symfony\Component\DependencyInjection\ContainerInterface;
 
     /**
@@ -186,6 +187,13 @@ Drupal Services and Dependency Injection
       protected $messenger;
       
       /**
+       * The Current path service.
+       *
+       * @var \Drupal\Core\Path\CurrentPathStack
+       */
+      protected $current_path;
+      
+      /**
        * Constructs a new UserLoginForm.
        *
        * @param \Drupal\Core\Session\AccountInterface $account
@@ -230,6 +238,9 @@ Drupal Services and Dependency Injection
        *   The url generator.
        * @param \Drupal\Core\Messenger\MessengerInterface $messenger
        *   The messenger.
+       * @param \Drupal\Core\Path\CurrentPathStack $current_path
+       *   The current path.
+       
        */
 
       public function __construct(AccountInterface $account, AccountProxyInterface $current_user,
@@ -251,7 +262,8 @@ Drupal Services and Dependency Injection
       DateFormatterInterface $date_formatter,
       RouteMatchInterface $route_match,
       UrlGeneratorInterface $url_generator,
-      MessengerInterface $messenger) {
+      MessengerInterface $messenger,
+      CurrentPathStack $current_path) {
         $this->account = $account;
         $this->currentUser = $current_user;
         $this->connection = $connection;
@@ -273,6 +285,7 @@ Drupal Services and Dependency Injection
         $this->routeMatch = $route_match;
         $this->urlGenerator = $url_generator;
         $this->messenger = $messenger;
+        $this->currentPath = $current_path
       }
 
       /**
@@ -300,6 +313,7 @@ Drupal Services and Dependency Injection
           $container->get('date.formatter'),
           $container->get('current_route_match'),
           $container->get('url_generator'),
-          $container->get('messenger')
+          $container->get('messenger'),
+          $container->get('path.current')
         );
       }
