@@ -29,7 +29,8 @@ Drupal Services and Dependency Injection
     use Drupal\Core\Routing\RouteMatchInterface;
     use Drupal\Core\Routing\UrlGeneratorInterface;
     use Drupal\Core\Messenger\MessengerInterface;
-    use \Drupal\Core\Path\CurrentPathStack;
+    use Drupal\Core\Path\CurrentPathStack;
+    use Drupal\Core\File\FileUrlGenerator;
     use Symfony\Component\DependencyInjection\ContainerInterface;
 
     /**
@@ -192,6 +193,13 @@ Drupal Services and Dependency Injection
        * @var \Drupal\Core\Path\CurrentPathStack
        */
       protected $current_path;
+            
+      /**
+       * The Current path service.
+       *
+       * @var \Drupal\Core\File\FileUrlGenerator
+       */
+      protected $file_url;
       
       /**
        * Constructs a new UserLoginForm.
@@ -240,6 +248,8 @@ Drupal Services and Dependency Injection
        *   The messenger.
        * @param \Drupal\Core\Path\CurrentPathStack $current_path
        *   The current path.
+       * @param \Drupal\Core\File\FileUrlGenerator $file_url
+       *   The file url generator.
        
        */
 
@@ -263,7 +273,8 @@ Drupal Services and Dependency Injection
       RouteMatchInterface $route_match,
       UrlGeneratorInterface $url_generator,
       MessengerInterface $messenger,
-      CurrentPathStack $current_path) {
+      CurrentPathStack $current_path,
+      FileUrlGenerator $file_url) {
         $this->account = $account;
         $this->currentUser = $current_user;
         $this->connection = $connection;
@@ -285,7 +296,8 @@ Drupal Services and Dependency Injection
         $this->routeMatch = $route_match;
         $this->urlGenerator = $url_generator;
         $this->messenger = $messenger;
-        $this->currentPath = $current_path
+        $this->currentPath = $current_path;
+        $this->fileurl= $file_url;
       }
 
       /**
@@ -314,6 +326,7 @@ Drupal Services and Dependency Injection
           $container->get('current_route_match'),
           $container->get('url_generator'),
           $container->get('messenger'),
-          $container->get('path.current')
+          $container->get('path.current'),
+          $container->get('file_url_generator')
         );
       }
