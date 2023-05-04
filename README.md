@@ -31,6 +31,10 @@ Drupal Services and Dependency Injection
     use Drupal\Core\Messenger\MessengerInterface;
     use Drupal\Core\Path\CurrentPathStack;
     use Drupal\Core\File\FileUrlGenerator;
+    use Drupal\Core\Logger\LoggerChannelFactory;
+    use Drupal\Core\Cache\CacheBackendInterface;
+    use Drupal\Core\Password\PasswordInterface;
+    use Drupal\Core\Extension\ModuleHandlerInterface;
     use Symfony\Component\DependencyInjection\ContainerInterface;
 
     /**
@@ -202,6 +206,34 @@ Drupal Services and Dependency Injection
       protected $file_url;
       
       /**
+       * A logger factory.
+       *
+       * @var \Drupal\Core\Logger\LoggerChannelFactory
+       */
+      protected $loggerFactory;
+      
+      /**
+       * The cache.
+       *
+       * @var \Drupal\Core\Cache\CacheBackendInterface
+       */
+      protected $cache;
+      
+      /**
+       * A password instance.
+       *
+       * @var \Drupal\Core\Password\PasswordInterface
+       */
+      protected $password;
+  
+      /**
+       * A module Handler instance.
+       *
+       * @var \Drupal\Core\Extension\ModuleHandlerInterface
+       */
+      protected $moduleHandler;
+      
+      /**
        * Constructs a new UserLoginForm.
        *
        * @param \Drupal\Core\Session\AccountInterface $account
@@ -250,7 +282,10 @@ Drupal Services and Dependency Injection
        *   The current path.
        * @param \Drupal\Core\File\FileUrlGenerator $file_url
        *   The file url generator.
-       
+       * @param \Drupal\Core\Logger\LoggerChannelFactory $logger_factory
+       *   A logger instance.
+       * @param \Drupal\Core\Cache\CacheBackendInterface $cache
+       *   The route match.   
        */
 
       public function __construct(AccountInterface $account, AccountProxyInterface $current_user,
@@ -274,7 +309,11 @@ Drupal Services and Dependency Injection
       UrlGeneratorInterface $url_generator,
       MessengerInterface $messenger,
       CurrentPathStack $current_path,
-      FileUrlGenerator $file_url) {
+      FileUrlGenerator $file_url,
+      LoggerChannelFactory $logger_factory,      
+      CacheBackendInterface $cache,
+      PasswordInterface $password,
+      ModuleHandlerInterface $module_handler,) {
         $this->account = $account;
         $this->currentUser = $current_user;
         $this->connection = $connection;
@@ -298,6 +337,10 @@ Drupal Services and Dependency Injection
         $this->messenger = $messenger;
         $this->currentPath = $current_path;
         $this->fileurl= $file_url;
+        $this->loggerFactory = $logger_factory;
+        $this->cache = $cache;
+        $this->password = $password;
+        $this->moduleHandler = $module_handler;
       }
 
       /**
@@ -327,6 +370,10 @@ Drupal Services and Dependency Injection
           $container->get('url_generator'),
           $container->get('messenger'),
           $container->get('path.current'),
-          $container->get('file_url_generator')
+          $container->get('file_url_generator'),
+          $container->get('logger.factory'),
+          $container->get('cache'),
+          $container->get('password'),
+          $container->get('module_handler'),
         );
       }
